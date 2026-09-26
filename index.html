@@ -1,0 +1,904 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>コンパイラアーキテクチャと数学的理論</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.ec1eaa64.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="." title="コンパイラアーキテクチャと数学的理論" class="md-header__button md-logo" aria-label="コンパイラアーキテクチャと数学的理論" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            コンパイラアーキテクチャと数学的理論
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              コンパイラ全パイプラインのアーキテクチャと数学的理論の完全体系レポート：字句解析から動的計画法、そして現代の最適化まで
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/makotonoda110-dotcom/compiler-architecture-report.git" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="." title="コンパイラアーキテクチャと数学的理論" class="md-nav__button md-logo" aria-label="コンパイラアーキテクチャと数学的理論" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    コンパイラアーキテクチャと数学的理論
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/makotonoda110-dotcom/compiler-architecture-report.git" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    コンパイラ全パイプラインのアーキテクチャと数学的理論の完全体系レポート：字句解析から動的計画法、そして現代の最適化まで
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="." class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    コンパイラ全パイプラインのアーキテクチャと数学的理論の完全体系レポート：字句解析から動的計画法、そして現代の最適化まで
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. はじめに：コンパイラアーキテクチャの全体像と数学的パラダイム
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 前半フェーズ：ソースコードから中間表現（AST / 式ツリー）の生成
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 前半フェーズ：ソースコードから中間表現（AST / 式ツリー）の生成">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-lexical-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 字句解析（Lexical Analysis）：正規表現と有限オートマトン
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-syntax-analysislalr1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 構文解析（Syntax Analysis）：文脈自由文法とLALR(1)パーシング
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-semantic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 意味解析（Semantic Analysis）、型チェック、およびシンボルテーブル
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-astir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 抽象構文木（AST）と中間表現（IR）の構築
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-dynamic-programming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 中盤〜後半フェーズ：動的計画法（Dynamic Programming）による最適命令選択の数理（完全詳細版）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 中盤〜後半フェーズ：動的計画法（Dynamic Programming）による最適命令選択の数理（完全詳細版）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tree-grammarcovering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 木文法（Tree Grammar）と被覆（Covering）の形式的定義
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-labeling-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 ボトムアップ・マッチングとコスト評価（Labeling Phase）のアルゴリズム
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-tree-automataburg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 樹木オートマトン（Tree Automata）とBURGのメカニズム
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-reduction-cover-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 トップダウンの命令生成（Reduction / Cover Phase）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 計算量オーダーの優位性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-llvm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 現代のコンパイラアーキテクチャ（LLVM等）における先進的数学理論
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 現代のコンパイラアーキテクチャ（LLVM等）における先進的数学理論">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-ssastatic-single-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 SSA（Static Single Assignment）形式とデータフロー解析の数理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-graph-coloring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 レジスタ割当てにおけるグラフ彩色問題（Graph Coloring）の数理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 結び
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        出典・参考資料
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. はじめに：コンパイラアーキテクチャの全体像と数学的パラダイム
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-ast" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 前半フェーズ：ソースコードから中間表現（AST / 式ツリー）の生成
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. 前半フェーズ：ソースコードから中間表現（AST / 式ツリー）の生成">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-lexical-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1 字句解析（Lexical Analysis）：正規表現と有限オートマトン
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-syntax-analysislalr1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2 構文解析（Syntax Analysis）：文脈自由文法とLALR(1)パーシング
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#23-semantic-analysis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.3 意味解析（Semantic Analysis）、型チェック、およびシンボルテーブル
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#24-astir" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.4 抽象構文木（AST）と中間表現（IR）の構築
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-dynamic-programming" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 中盤〜後半フェーズ：動的計画法（Dynamic Programming）による最適命令選択の数理（完全詳細版）
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. 中盤〜後半フェーズ：動的計画法（Dynamic Programming）による最適命令選択の数理（完全詳細版）">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-tree-grammarcovering" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1 木文法（Tree Grammar）と被覆（Covering）の形式的定義
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-labeling-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2 ボトムアップ・マッチングとコスト評価（Labeling Phase）のアルゴリズム
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-tree-automataburg" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3 樹木オートマトン（Tree Automata）とBURGのメカニズム
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-reduction-cover-phase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4 トップダウンの命令生成（Reduction / Cover Phase）
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5 計算量オーダーの優位性
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-llvm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 現代のコンパイラアーキテクチャ（LLVM等）における先進的数学理論
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. 現代のコンパイラアーキテクチャ（LLVM等）における先進的数学理論">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-ssastatic-single-assignment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1 SSA（Static Single Assignment）形式とデータフロー解析の数理
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-graph-coloring" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2 レジスタ割当てにおけるグラフ彩色問題（Graph Coloring）の数理
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. 結び
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        出典・参考資料
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="_1">コンパイラ全パイプラインのアーキテクチャと数学的理論の完全体系レポート：字句解析から動的計画法、そして現代の最適化まで</h1>
+<h2 id="1">1. はじめに：コンパイラアーキテクチャの全体像と数学的パラダイム</h2>
+<p>プログラミング言語のソースコードから実行可能な機械語プログラムを生成するコンパイラのパイプラインは、伝統的に「フロントエンド（前半フェーズ）」、「オプティマイザ（中盤フェーズ）」、および「バックエンド（後半フェーズ）」の3つの主要セグメントに大別される。初代「ポータブルCコンパイラ（PCC）」から次世代の「PCC2」、そして現代の先進的コンパイラ基盤（LLVM等）に至るまで、この一連の変換プロセスは、オートマトン理論、形式言語理論、グラフ理論、および組合せ最適化理論という厳密な数学的基盤の上に構築されてきた。本レポートでは、ソースコードの字句解析・構文解析から抽象構文木（AST）の生成、PCC2が確立した「動的計画法による最適命令選択」の数理的メカニズム（詳細版）、そして現代コンパイラのSSA形式・グラフ彩色に至るまで、コンパイラ全体にわたるアーキテクチャと数理的メカニズムを完全に統合・網羅して詳解する。</p>
+<hr />
+<h2 id="2-ast">2. 前半フェーズ：ソースコードから中間表現（AST / 式ツリー）の生成</h2>
+<p>コンパイラのフロントエンドは、人間が記述した文字列（ソースコード）を解析し、プログラムの構造的・意味的意図を保持した機械可読な抽象構文木（Abstract Syntax Tree: AST）または式ツリーへ変換する役割を担う。</p>
+<h3 id="21-lexical-analysis">2.1 字句解析（Lexical Analysis）：正規表現と有限オートマトン</h3>
+<p>ソースコードの文字ストリームを意味のある最小単位（トークン：識別子、キーワード、演算子、リテラル等）に分割するフェーズである。
+* <strong>数学的モデル：</strong> トークンのパターンは<strong>正規表現（Regular Expressions）</strong>によって定義される。
+* <strong>オートマトン変換の理論：</strong> 
+  1. 記述された正規表現は、<strong>Thompsonの構築法</strong>により<strong>非決定性有限オートマトン（NFA: Nondeterministic Finite Automaton）</strong>に変換される。
+  2. 次に、<strong>部分集合構築法（Subset Construction Algorithm）</strong>を用いて、NFAを効率的な<strong>決定性有限オートマトン（DFA: Deterministic Finite Automaton）</strong>へと等価変換する。
+  3. 最後に、DFAの状態数を最小化する<strong>Hopcroftのアルゴリズム</strong>等を用いることで、線形時間 <span class="arithmatex">\(O(n)\)</span> で高速に字句ストリームを認識するレキサー（Lexer）が生成される。</p>
+<h3 id="22-syntax-analysislalr1">2.2 構文解析（Syntax Analysis）：文脈自由文法とLALR(1)パーシング</h3>
+<p>字句の並びが言語の文法規則に従っているかを検証し、階層的な構文木を構築するフェーズである。PCCが採用した <strong>Yacc（Yet Another Compiler-Compiler）</strong> はこの理論の実践的極致である。
+* <strong>形式文法とチョムスキー階層：</strong> プログラミング言語の構文は通常、<strong>文脈自由文法（Context-Free Grammar: CFG）</strong> <span class="arithmatex">\(G = (V, \Sigma, R, S)\)</span> によって定義される。ここで <span class="arithmatex">\(V\)</span> は非終端記号、<span class="arithmatex">\(\Sigma\)</span> は終端記号、<span class="arithmatex">\(R\)</span> は生成規則、<span class="arithmatex">\(S\)</span> は開始記号である。
+* <strong>プッシュダウン・オートマトン（PDA）とLRパーシング：</strong> 
+  CFGを解析するため、コンパイラはスタックを備えたオートマトンであるPDAを利用する。特に、初代PCCが採用した <strong>LALR(1)（Look-Ahead LR with 1 token lookahead）</strong> パーサは、LR(0)の持つ状態爆発の課題を抑えつつ、実用的なプログラミング言語の構文を効率よく（<span class="arithmatex">\(O(N)\)</span> の時間計算量で）決定性解析できる強力な数学的枠組みを提供した。</p>
+<h3 id="23-semantic-analysis">2.3 意味解析（Semantic Analysis）、型チェック、およびシンボルテーブル</h3>
+<p>構文的に正しいプログラムに対し、その意味的妥当性（型の整合性、スコープの解決、宣言の有無）を検証するフェーズである。
+* <strong>属性文法（Attribute Grammars）の理論：</strong> 構文木の各ノードに「属性（型、サイズ、記憶クラスなど）」を付与し、木上の依存関係（構文木のボトムアップまたはトップダウンの走査）に基づいて制約を満たしているか評価する。
+* <strong>シンボルテーブル（Symbol Table）の管理：</strong> スコープの階層構造（ブロック構造）を数学的な木またはハッシュの連鎖構造として管理し、識別子の名前解決（Name Resolution）を高速に行う。</p>
+<h3 id="24-astir">2.4 抽象構文木（AST）と中間表現（IR）の構築</h3>
+<p>フロントエンドの最終成果物として、言語固有の冗長な構文詳細（括弧の位置や構文糖など）を削ぎ落とした<strong>抽象構文木（AST）</strong>、あるいはPCCが採用した<strong>式ツリー（Expression Trees）</strong>、さらには現代コンパイラにおけるフラットな3アドレスコード（Three-Address Code）等の中間表現へと変換される。これにより、マシン非依存の純粋なデータ構造が確立される。</p>
+<hr />
+<h2 id="3-dynamic-programming">3. 中盤〜後半フェーズ：動的計画法（Dynamic Programming）による最適命令選択の数理（完全詳細版）</h2>
+<p>PCC2およびその系譜（BURG、twigなど）において確立された動的計画法に基づく最適命令選択（Dynamic Programming Code-Generation）は、不規則なレジスタ構成や多様なアドレッシングモードを持つプロセッサに対し、数学的に最適な機械語命令の組み合わせを効率よく導き出すための画期的な手法である。</p>
+<h3 id="31-tree-grammarcovering">3.1 木文法（Tree Grammar）と被覆（Covering）の形式的定義</h3>
+<p>コード生成における命令選択問題は、ソースプログラムの中間表現である<strong>式ツリー（Expression Trees）</strong>を、ターゲットプロセッサの命令セットに対応する<strong>木パターン（Tree Patterns）</strong>によって完全に被覆する（Cover）組合せ最適化問題として定式化される。</p>
+<ul>
+<li><strong>木文法 <span class="arithmatex">\(G\)</span> の定義:</strong>
+  ターゲットマシンの命令セットは、文脈自由木文法（Context-Free Tree Grammar） <span class="arithmatex">\(G = (N, \Sigma, R, S)\)</span> として記述される。</li>
+<li><span class="arithmatex">\(N\)</span>: 非終端記号の集合（例: <code>reg</code>, <code>mem</code>, <code>imm</code> 等の抽象的なデータカテゴリ）。</li>
+<li><span class="arithmatex">\(\Sigma\)</span>: 終端記号の集合（例: <code>PLUS</code>, <code>MUL</code>, <code>MEM</code> などの演算子ノード）。</li>
+<li><span class="arithmatex">\(R\)</span>: 生成規則の集合。各規則 <span class="arithmatex">\(p \in R\)</span> は <span class="arithmatex">\(l_p \to r_p\)</span> の形式を持ち、左側 <span class="arithmatex">\(l_p\)</span> は終端記号と非終端記号からなる木パターン、右側 <span class="arithmatex">\(r_p\)</span> は非終端記号である。</li>
+<li>
+<p>各規則 <span class="arithmatex">\(p\)</span> には、その命令の実行サイクル数やコードサイズを表す非負のコスト <span class="arithmatex">\(c(p) \in \mathbb{R}^+\)</span> が付与される。</p>
+</li>
+<li>
+<p><strong>最適被覆問題の数学的定式化:</strong>
+  与えられた入力ツリー <span class="arithmatex">\(T\)</span> に対し、根から葉までを無駄なく被覆する規則の集合子群 <span class="arithmatex">\(\{p_1, p_2, \dots, p_k\}\)</span> であって、総コスト <span class="arithmatex">\(\sum_{i=1}^k c(p_i)\)</span> を最小化するものを求める問題である。</p>
+</li>
+</ul>
+<h3 id="32-labeling-phase">3.2 ボトムアップ・マッチングとコスト評価（Labeling Phase）のアルゴリズム</h3>
+<p>Alfred V. Aho、Mahadevan Ganapathi、およびThomas W. K. Tjiangらによって洗練された動的計画法アプローチでは、式ツリーが<strong>「最適部分構造（Optimal Substructure）」</strong>を持つ性質を利用する。すなわち、「巨大な式ツリーをカバーする最適コストは、その各部分木をカバーする最適コストの総和から決定される」（Aho et al., 1989）。</p>
+<ol>
+<li>
+<p><strong>状態の付与とコスト表の作成:</strong>
+   入力ツリー <span class="arithmatex">\(T\)</span> の各ノード <span class="arithmatex">\(n\)</span> に対し、そのノードをルートとする部分木を非終端記号 <span class="arithmatex">\(X \in N\)</span> で還元するために必要な最小コストを保持する配列 <span class="arithmatex">\(C(n, X)\)</span> を定義する。</p>
+</li>
+<li>
+<p><strong>Bellman方程式（漸化式）のボトムアップ評価:</strong>
+   葉から根に向かって（Post-order traversal）、各ノード <span class="arithmatex">\(n\)</span> におけるコストを以下の漸化式（Bellman方程式）に従って計算する。
+   $<span class="arithmatex">\(C(n, X) = \min_{p \in R : l_p \to X \text{が } n \text{ にマッチ}} \left( c(p) + \sum_{v \in \text{children}(n)} C(v, \text{sub-non-terminal}(p, v)) \right)\)</span>$
+   ここで、マッチする規則が存在しない場合のコストは <span class="arithmatex">\(\infty\)</span> とする。</p>
+</li>
+</ol>
+<h3 id="33-tree-automataburg">3.3 樹木オートマトン（Tree Automata）とBURGのメカニズム</h3>
+<p>PCC2以降の発展形である <strong>BURG（Bottom-Up Rewrite Generator）</strong> や <strong>twig</strong> では、この動的計画法のラベル付けを事前にコンパイルし、高速な有限決定性木オートマトン（Finite Deterministic Tree Automaton）として実装している。
+* <strong>テーブル駆動型マッチング:</strong> 各ノードの演算子種類と子どもの状態ラベルの組み合わせに対し、O(1) のテーブル引き（または高速な状態遷移）で最小コストの規則を一意に引くことが可能となる。</p>
+<h3 id="34-reduction-cover-phase">3.4 トップダウンの命令生成（Reduction / Cover Phase）</h3>
+<p>コスト評価フェーズ（Labeling）が完了すると、ルートノードにおける目標の非終端記号（通常は文全体を表す <code>stmt</code> や <code>reg</code>）の最小コスト状態からスタートし、再帰的に最適な規則を選択・分解していく（Reduction）。
+* このトップダウンの走査により、曖昧性のない最適な機械語命令のシーケンスが線形時間で構築される。</p>
+<h3 id="35">3.5 計算量オーダーの優位性</h3>
+<p>このボトムアップ・マッチングおよび動的計画法に基づく命令選択手法の最大の数学的利点は、ツリーのノード数を <span class="arithmatex">\(N\)</span> としたとき、計算量オーダーが <strong><span class="arithmatex">\(O(N)\)</span>（線形時間）</strong> に収まる点である。これにより、複雑な CISC プロセッサから RISC プロセッサに至るまで、スケーラブルかつ効率的なコード生成が保証された（Aho et al., 1989）。</p>
+<hr />
+<h2 id="4-llvm">4. 現代のコンパイラアーキテクチャ（LLVM等）における先進的数学理論</h2>
+<p>PCCおよびPCC2が切り拓いた「中間表現の分離」「パターンマッチング」「最適化の自動化」の思想は、現代のLLVMや最先端のコンパイラ基盤において、さらに高度なグラフ理論や代数系へと昇華されている。</p>
+<h3 id="41-ssastatic-single-assignment">4.1 SSA（Static Single Assignment）形式とデータフロー解析の数理</h3>
+<p>現代のコンパイラのほとんど（LLVM IRなど）は、SSA形式を採用している。</p>
+<ul>
+<li><strong>定義：</strong> プログラム中のすべての変数への代入文が、静的に<strong>「ちょうど1回」</strong>だけ行われるように変数をリネームした中間表現。</li>
+<li><strong>支配木（Dominator Tree）の数理：</strong>
+  コントロールフローグラフ（CFG） <span class="arithmatex">\(G = (V, E, entry)\)</span> において、ノード <span class="arithmatex">\(d\)</span> がノード <span class="arithmatex">\(n\)</span> を<strong>支配（Dominate）</strong>するとは、開始ノード <span class="arithmatex">\(entry\)</span> から <span class="arithmatex">\(n\)</span> に至るすべての有向パスが必ず <span class="arithmatex">\(d\)</span> を経由することを指す。
+  $<span class="arithmatex">\(\text{Dom}(n) = \{d \in V \mid \text{every path from } entry \text{ to } n \text{ passes through } d\}\)</span>$
+  この支配関係は半順序（Partial Order）をなし、<strong>支配木（Dominator Tree）</strong>という階層構造に一意にモデリングできる。</li>
+<li><strong><span class="arithmatex">\(\phi\)</span>（Phi）関数の配置と反復支配境界（IDF）：</strong>
+  分岐によって複数の異なる定義が合流するブロックの先頭に、どの変数を採用すべきかを選択する抽象的な関数 <span class="arithmatex">\(\phi\)</span>（Phi Node）を挿入する必要がある（Cytron et al., 1991）。この挿入位置を効率的かつ最小限に決定するため、グラフ理論における<strong>支配境界（Dominance Frontier）</strong>および<strong>反復支配境界（Iterated Dominance Frontier: IDF）</strong>の計算アルゴリズムが用いられる（Cytron et al., 1991）。</li>
+</ul>
+<h3 id="42-graph-coloring">4.2 レジスタ割当てにおけるグラフ彩色問題（Graph Coloring）の数理</h3>
+<p>無限にある仮想レジスタを、有限の物理レジスタ（<span class="arithmatex">\(k\)</span> 個）に割り当てる問題は、グラフ理論における<strong>グラフ彩色問題（Graph Coloring Problem）</strong>に完全に帰着される（Chaitin, 1982）。</p>
+<ul>
+<li><strong>干渉グラフ（Interference Graph）の構築：</strong>
+  プログラム中の各変数の生存期間（Live Range）が重なり合う（同時に有効である）変数間に無向辺を結んだグラフ <span class="arithmatex">\(G = (V, E)\)</span> を作成する（Chaitin, 1982）。</li>
+<li><strong>NP完全性と近似アルゴリズム（Chaitin-Briggs アルゴリズム）：</strong>
+  一般のグラフの <span class="arithmatex">\(k\)</span>-彩色問題（頂点を高々 <span class="arithmatex">\(k\)</span> 色で隣接する色同士が重複しないように塗り分ける問題）は <strong>NP完全</strong> である。そのため、コンパイラでは以下のヒューリスティックな近似手法を用いる（Chaitin, 1982）。</li>
+<li><strong>簡約（Simplification）：</strong> 次数が <span class="arithmatex">\(k\)</span> 未満の頂点をグラフから安全に削除し、スタックに積む（Chaitin, 1982）。</li>
+<li><strong>スピリング（Spilling）：</strong> すべての頂点の次数が <span class="arithmatex">\(k\)</span> 以上になった場合、メモリへ退避（Spill）させるべき変数をコスト対効果の数学的評価モデルに基づいて選択し、グラフから除外する（Chaitin, 1982）。</li>
+<li><strong>着色（Coloring）：</strong> スタックから頂点をポップしながら、周囲と重複しない物理レジスタの色を割り当てる（Chaitin, 1982）。</li>
+</ul>
+<hr />
+<h2 id="5">5. 結び</h2>
+<p>初代PCCが確立した形式文法による構文解析とマシン非依存の分離設計、PCC2が導入した動的計画法による最適命令選択（およびその数学的詳細）、そして現代のLLVMなどのコンパイラ基盤が誇るSSA形式やグラフ彩色に至るまで、コンパイラ工学は一貫して厳密な数学的理論に支えられて発展してきた。本レポートで網羅した全パイプラインの数理的基盤は、属人的な実装から脱却し、多様なハードウェア環境において極限のパフォーマンスと移植性を達成するための不変の原理である。</p>
+<hr />
+<h2 id="_2">出典・参考資料</h2>
+<ul>
+<li>Johnson, S.C. (1978). "A portable compiler: Theory and practice". <em>Proceedings of the 5th ACM SIGACT-SIGPLAN symposium on Principles of programming languages</em> (POPL '78), pp. 97–104. <a href="https://doi.org/10.1145/512760.512771">DOI: 10.1145/512760.512771</a></li>
+<li>Aho, A. V., Ganapathi, M., &amp; Tjiang, S. W. K. (1989). "Code generation using tree matching and dynamic programming". <em>ACM Transactions on Programming Languages and Systems (TOPLAS)</em>, 11(4), 491–516. <a href="https://doi.org/10.1145/65946.65947">DOI: 10.1145/65946.65947</a></li>
+<li>Cytron, R., Ferrante, J., Rosen, B. K., Wegman, M. N., &amp; Zadeck, F. K. (1991). "Efficiently computing static single assignment form and the control dependence graph". <em>ACM Transactions on Programming Languages and Systems (TOPLAS)</em>, 13(4), 451–490. <a href="https://doi.org/10.1145/115372.115320">DOI: 10.1145/115372.115320</a></li>
+<li>Chaitin, G. J. (1982). "Register allocation and spilling via graph coloring". <em>SIGPLAN Notices</em>, 17(6), 98–105. <a href="https://doi.org/10.1145/800230.806984">DOI: 10.1145/800230.806984</a></li>
+<li>Aho, A. V., Lam, M. S., Sethi, R., &amp; Ullman, J. D. (2006). <em>Compilers: Principles, Techniques, and Tools</em> (2nd ed.). Addison-Wesley.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": [], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+        <script src="javascripts/mathjax.js"></script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
