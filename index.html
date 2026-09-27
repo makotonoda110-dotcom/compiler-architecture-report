@@ -845,7 +845,7 @@
 <ul>
 <li><strong>形式文法とチョムスキー階層：</strong> プログラミング言語の構文は通常、<strong>文脈自由文法（Context-Free Grammar: CFG）</strong> <span class="arithmatex">\(G = (V, \Sigma, R, S)\)</span> によって定義される。ここで <span class="arithmatex">\(V\)</span> は非終端記号、<span class="arithmatex">\(\Sigma\)</span> は終端記号、<span class="arithmatex">\(R\)</span> は生成規則、<span class="arithmatex">\(S\)</span> は開始記号である。</li>
 <li><strong>プッシュダウン・オートマトン（PDA）とLRパーシング：</strong> 
-  CFGを解析するため、コンパイラはスタックを備えたオートマトンであるPDAを利用する。特に、初代PCCが採用した <strong>LALR(1)（Look-Ahead LR with 1 token lookahead）</strong> パーサは、LR(0)の持つ状態爆発の課題を抑えつつ、実用的なプログラミング言語の構文を効率よく（<span class="arithmatex">\(O(N)\)</span> の時間計算量で）決定性解析できる強力な数学的枠組みを提供した。</li>
+    CFGを解析するため、コンパイラはスタックを備えたオートマトンであるPDAを利用する。特に、初代PCCが採用した <strong>LALR(1)（Look-Ahead LR with 1 token lookahead）</strong> パーサは、LR(0)の持つ状態爆発の課題を抑えつつ、実用的なプログラミング言語の構文を効率よく（<span class="arithmatex">\(O(N)\)</span> の時間計算量で）決定性解析できる強力な数学的枠組みを提供した。</li>
 </ul>
 <h3 id="23-semantic-analysis">2.3 意味解析（Semantic Analysis）、型チェック、およびシンボルテーブル</h3>
 <p>構文的に正しいプログラムに対し、その意味的妥当性（型の整合性、スコープの解決、宣言の有無）を検証するフェーズである。</p>
@@ -863,7 +863,7 @@
 <ul>
 <li>
 <p><strong>木文法 <span class="arithmatex">\(G\)</span> の定義:</strong>
-  ターゲットマシンの命令セットは、文脈自由木文法（Context-Free Tree Grammar） <span class="arithmatex">\(G = (N, \Sigma, R, S)\)</span> として記述される。</p>
+    ターゲットマシンの命令セットは、文脈自由木文法（Context-Free Tree Grammar） <span class="arithmatex">\(G = (N, \Sigma, R, S)\)</span> として記述される。</p>
 <ul>
 <li><span class="arithmatex">\(N\)</span>: 非終端記号の集合（例: <code>reg</code>, <code>mem</code>, <code>imm</code> 等の抽象的なデータカテゴリ）。</li>
 <li><span class="arithmatex">\(\Sigma\)</span>: 終端記号の集合（例: <code>PLUS</code>, <code>MUL</code>, <code>MEM</code> などの演算子ノード）。</li>
@@ -873,7 +873,7 @@
 </li>
 <li>
 <p><strong>最適被覆問題の数学的定式化:</strong>
-  与えられた入力ツリー <span class="arithmatex">\(T\)</span> に対し、根から葉までを無駄なく被覆する規則の集合子群 <span class="arithmatex">\(\{p_1, p_2, \dots, p_k\}\)</span> であって、総コスト <span class="arithmatex">\(\sum_{i=1}^k c(p_i)\)</span> を最小化するものを求める問題である。</p>
+    与えられた入力ツリー <span class="arithmatex">\(T\)</span> に対し、根から葉までを無駄なく被覆する規則の集合子群 <span class="arithmatex">\(\{p_1, p_2, \dots, p_k\}\)</span> であって、総コスト <span class="arithmatex">\(\sum_{i=1}^k c(p_i)\)</span> を最小化するものを求める問題である。</p>
 </li>
 </ul>
 <h3 id="32-labeling-phase">3.2 ボトムアップ・マッチングとコスト評価（Labeling Phase）のアルゴリズム</h3>
@@ -881,13 +881,13 @@
 <ol>
 <li>
 <p><strong>状態の付与とコスト表の作成:</strong>
-   入力ツリー <span class="arithmatex">\(T\)</span> の各ノード <span class="arithmatex">\(n\)</span> に対し、そのノードをルートとする部分木を非終端記号 <span class="arithmatex">\(X \in N\)</span> で還元するために必要な最小コストを保持する配列 <span class="arithmatex">\(C(n, X)\)</span> を定義する。</p>
+    入力ツリー <span class="arithmatex">\(T\)</span> の各ノード <span class="arithmatex">\(n\)</span> に対し、そのノードをルートとする部分木を非終端記号 <span class="arithmatex">\(X \in N\)</span> で還元するために必要な最小コストを保持する配列 <span class="arithmatex">\(C(n, X)\)</span> を定義する。</p>
 </li>
 <li>
 <p><strong>Bellman方程式（漸化式）のボトムアップ評価:</strong>
-   葉から根に向かって（Post-order traversal）、各ノード <span class="arithmatex">\(n\)</span> におけるコストを以下の漸化式（Bellman方程式）に従って計算する。
-   $<span class="arithmatex">\(C(n, X) = \min_{p \in R : l_p \to X \text{が } n \text{ にマッチ}} \left( c(p) + \sum_{v \in \text{children}(n)} C(v, \text{sub-non-terminal}(p, v)) \right)\)</span>$
-   ここで、マッチする規則が存在しない場合のコストは <span class="arithmatex">\(\infty\)</span> とする。</p>
+    葉から根に向かって（Post-order traversal）、各ノード <span class="arithmatex">\(n\)</span> におけるコストを以下の漸化式（Bellman方程式）に従って計算する。</p>
+<div class="arithmatex">\[C(n, X) = \min_{p \in R : l_p \to X \text{が } n \text{ にマッチ}} \left( c(p) + \sum_{v \in \text{children}(n)} C(v, \text{sub-non-terminal}(p, v)) \right)\]</div>
+<p>ここで、マッチする規則が存在しない場合のコストは <span class="arithmatex">\(\infty\)</span> とする。</p>
 </li>
 </ol>
 <h3 id="33-tree-automataburg">3.3 樹木オートマトン（Tree Automata）とBURGのメカニズム</h3>
@@ -909,21 +909,23 @@
 <p>現代のコンパイラのほとんど（LLVM IRなど）は、SSA形式を採用している。</p>
 <ul>
 <li><strong>定義：</strong> プログラム中のすべての変数への代入文が、静的に<strong>「ちょうど1回」</strong>だけ行われるように変数をリネームした中間表現。</li>
-<li><strong>支配木（Dominator Tree）の数理：</strong>
-  コントロールフローグラフ（CFG） <span class="arithmatex">\(G = (V, E, entry)\)</span> において、ノード <span class="arithmatex">\(d\)</span> がノード <span class="arithmatex">\(n\)</span> を<strong>支配（Dominate）</strong>するとは、開始ノード <span class="arithmatex">\(entry\)</span> から <span class="arithmatex">\(n\)</span> に至るすべての有向パスが必ず <span class="arithmatex">\(d\)</span> を経由することを指す。
-  $<span class="arithmatex">\(\text{Dom}(n) = \{d \in V \mid \text{every path from } entry \text{ to } n \text{ passes through } d\}\)</span>$
-  この支配関係は半順序（Partial Order）をなし、<strong>支配木（Dominator Tree）</strong>という階層構造に一意にモデリングできる。</li>
-<li><strong><span class="arithmatex">\(\phi\)</span>（Phi）関数の配置と反復支配境界（IDF）：</strong>
-  分岐によって複数の異なる定義が合流するブロックの先頭に、どの変数を採用すべきかを選択する抽象的な関数 <span class="arithmatex">\(\phi\)</span>（Phi Node）を挿入する必要がある（Cytron et al., 1991）。この挿入位置を効率的かつ最小限に決定するため、グラフ理論における<strong>支配境界（Dominance Frontier）</strong>および<strong>反復支配境界（Iterated Dominance Frontier: IDF）</strong>の計算アルゴリズムが用いられる（Cytron et al., 1991）。</li>
+<li>
+<p><strong>支配木（Dominator Tree）の数理：</strong>
+    コントロールフローグラフ（CFG） <span class="arithmatex">\(G = (V, E, entry)\)</span> において、ノード <span class="arithmatex">\(d\)</span> がノード <span class="arithmatex">\(n\)</span> を<strong>支配（Dominate）</strong>するとは、開始ノード <span class="arithmatex">\(entry\)</span> から <span class="arithmatex">\(n\)</span> に至るすべての有向パスが必ず <span class="arithmatex">\(d\)</span> を経由することを指す。</p>
+<div class="arithmatex">\[\text{Dom}(n) = \{d \in V \mid \text{every path from } entry \text{ to } n \text{ passes through } d\}\]</div>
+<p>この支配関係は半順序（Partial Order）をなし、<strong>支配木（Dominator Tree）</strong>という階層構造に一意にモデリングできる。
+* <strong><span class="arithmatex">\(\phi\)</span>（Phi）関数の配置と反復支配境界（IDF）：</strong>
+分岐によって複数の異なる定義が合流するブロックの先頭に、どの変数を採用すべきかを選択する抽象的な関数 <span class="arithmatex">\(\phi\)</span>（Phi Node）を挿入する必要がある（Cytron et al., 1991）。この挿入位置を効率的かつ最小限に決定するため、グラフ理論における<strong>支配境界（Dominance Frontier）</strong>および<strong>反復支配境界（Iterated Dominance Frontier: IDF）</strong>の計算アルゴリズムが用いられる（Cytron et al., 1991）。</p>
+</li>
 </ul>
 <h3 id="42-graph-coloring">4.2 レジスタ割当てにおけるグラフ彩色問題（Graph Coloring）の数理</h3>
 <p>無限にある仮想レジスタを、有限の物理レジスタ（<span class="arithmatex">\(k\)</span> 個）に割り当てる問題は、グラフ理論における<strong>グラフ彩色問題（Graph Coloring Problem）</strong>に完全に帰着される（Chaitin, 1982）。</p>
 <ul>
 <li><strong>干渉グラフ（Interference Graph）の構築：</strong>
-  プログラム中の各変数の生存期間（Live Range）が重なり合う（同時に有効である）変数間に無向辺を結んだグラフ <span class="arithmatex">\(G = (V, E)\)</span> を作成する（Chaitin, 1982）。</li>
+    プログラム中の各変数の生存期間（Live Range）が重なり合う（同時に有効である）変数間に無向辺を結んだグラフ <span class="arithmatex">\(G = (V, E)\)</span> を作成する（Chaitin, 1982）。</li>
 <li>
 <p><strong>NP完全性と近似アルゴリズム（Chaitin-Briggs アルゴリズム）：</strong>
-  一般のグラフの <span class="arithmatex">\(k\)</span>-彩色問題（頂点を高々 <span class="arithmatex">\(k\)</span> 色で隣接する色同士が重複しないように塗り分ける問題）は <strong>NP完全</strong> である。そのため、コンパイラでは以下のヒューリスティックな近似手法を用いる（Chaitin, 1982）。</p>
+    一般のグラフの <span class="arithmatex">\(k\)</span>-彩色問題（頂点を高々 <span class="arithmatex">\(k\)</span> 色で隣接する色同士が重複しないように塗り分ける問題）は <strong>NP完全</strong> である。そのため、コンパイラでは以下のヒューリスティックな近似手法を用いる（Chaitin, 1982）。</p>
 <ol>
 <li><strong>簡約（Simplification）：</strong> 次数が <span class="arithmatex">\(k\)</span> 未満の頂点をグラフから安全に削除し、スタックに積む（Chaitin, 1982）。</li>
 <li><strong>スピリング（Spilling）：</strong> すべての頂点の次数が <span class="arithmatex">\(k\)</span> 以上になった場合、メモリへ退避（Spill）させるべき変数をコスト対効果の数学的評価モデルに基づいて選択し、グラフから除外する（Chaitin, 1982）。</li>
@@ -937,10 +939,10 @@
 <hr />
 <h2 id="_2">出典・参考資料</h2>
 <ul>
-<li>Johnson, S.C. (1978). "A portable compiler: Theory and practice". <em>Proceedings of the 5th ACM SIGACT-SIGPLAN symposium on Principles of programming languages</em> (POPL '78), pp. 97–104. <a href="https://doi.org/10.1145/512760.512771">DOI: 10.1145/512760.512771</a></li>
-<li>Aho, A. V., Ganapathi, M., &amp; Tjiang, S. W. K. (1989). "Code generation using tree matching and dynamic programming". <em>ACM Transactions on Programming Languages and Systems (TOPLAS)</em>, 11(4), 491–516. <a href="https://doi.org/10.1145/65946.65947">DOI: 10.1145/65946.65947</a></li>
-<li>Cytron, R., Ferrante, J., Rosen, B. K., Wegman, M. N., &amp; Zadeck, F. K. (1991). "Efficiently computing static single assignment form and the control dependence graph". <em>ACM Transactions on Programming Languages and Systems (TOPLAS)</em>, 13(4), 451–490. <a href="https://doi.org/10.1145/115372.115320">DOI: 10.1145/115372.115320</a></li>
-<li>Chaitin, G. J. (1982). "Register allocation and spilling via graph coloring". <em>SIGPLAN Notices</em>, 17(6), 98–105. <a href="https://doi.org/10.1145/800230.806984">DOI: 10.1145/800230.806984</a></li>
+<li>Johnson, S.C. (1978). "A portable compiler: Theory and practice". <em>Proceedings of the 5th ACM SIGACT-SIGPLAN symposium on Principles of programming languages</em> (POPL '78), pp. 97–104.</li>
+<li>Aho, A. V., Ganapathi, M., &amp; Tjiang, S. W. K. (1989). "Code generation using tree matching and dynamic programming". <em>ACM Transactions on Programming Languages and Systems (TOPLAS)</em>, 11(4), 491–516.</li>
+<li>Cytron, R., Ferrante, J., Rosen, B. K., Wegman, M. N., &amp; Zadeck, F. K. (1991). "Efficiently computing static single assignment form and the control dependence graph". <em>ACM Transactions on Programming Languages and Systems (TOPLAS)</em>, 13(4), 451–490.</li>
+<li>Chaitin, G. J. (1982). "Register allocation and spilling via graph coloring". <em>SIGPLAN Notices</em>, 17(6), 98–105.</li>
 <li>Aho, A. V., Lam, M. S., Sethi, R., &amp; Ullman, J. D. (2006). <em>Compilers: Principles, Techniques, and Tools</em> (2nd ed.). Addison-Wesley.</li>
 </ul>
 
