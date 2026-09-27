@@ -832,8 +832,12 @@
 <h3 id="21-lexical-analysis">2.1 字句解析（Lexical Analysis）：正規表現と有限オートマトン</h3>
 <p>ソースコードの文字ストリームを意味のある最小単位（トークン：識別子、キーワード、演算子、リテラル等）に分割するフェーズである。</p>
 <ul>
-<li><strong>数学的モデル：</strong> トークンのパターンは<strong>正規表現（Regular Expressions）</strong>によって定義される。</li>
-<li><strong>オートマトン変換の理論：</strong> <ol>
+<li>
+<p><strong>数学的モデル：</strong> トークンのパターンは<strong>正規表現（Regular Expressions）</strong>によって定義される。</p>
+</li>
+<li>
+<p><strong>オートマトン変換の理論：</strong> </p>
+<ol>
 <li>記述された正規表現は、<strong>Thompsonの構築法</strong>により<strong>非決定性有限オートマトン（NFA: Nondeterministic Finite Automaton）</strong>に変換される。</li>
 <li>次に、<strong>部分集合構築法（Subset Construction Algorithm）</strong>を用いて、NFAを効率的な<strong>決定性有限オートマトン（DFA: Deterministic Finite Automaton）</strong>へと等価変換する。</li>
 <li>最後に、DFAの状態数を最小化する<strong>Hopcroftのアルゴリズム</strong>等を用いることで、線形時間 <span class="arithmatex">\(O(n)\)</span> で高速に字句ストリームを認識するレキサー（Lexer）が生成される。</li>
@@ -843,15 +847,23 @@
 <h3 id="22-syntax-analysislalr1">2.2 構文解析（Syntax Analysis）：文脈自由文法とLALR(1)パーシング</h3>
 <p>字句の並びが言語の文法規則に従っているかを検証し、階層的な構文木を構築するフェーズである。PCCが採用した <strong>Yacc（Yet Another Compiler-Compiler）</strong> はこの理論の実践的極致である。</p>
 <ul>
-<li><strong>形式文法とチョムスキー階層：</strong> プログラミング言語の構文は通常、<strong>文脈自由文法（Context-Free Grammar: CFG）</strong> <span class="arithmatex">\(G = (V, \Sigma, R, S)\)</span> によって定義される。ここで <span class="arithmatex">\(V\)</span> は非終端記号、<span class="arithmatex">\(\Sigma\)</span> は終端記号、<span class="arithmatex">\(R\)</span> は生成規則、<span class="arithmatex">\(S\)</span> は開始記号である。</li>
-<li><strong>プッシュダウン・オートマトン（PDA）とLRパーシング：</strong> 
-    CFGを解析するため、コンパイラはスタックを備えたオートマトンであるPDAを利用する。特に、初代PCCが採用した <strong>LALR(1)（Look-Ahead LR with 1 token lookahead）</strong> パーサは、LR(0)の持つ状態爆発の課題を抑えつつ、実用的なプログラミング言語の構文を効率よく（<span class="arithmatex">\(O(N)\)</span> の時間計算量で）決定性解析できる強力な数学的枠組みを提供した。</li>
+<li>
+<p><strong>形式文法とチョムスキー階層：</strong> プログラミング言語の構文は通常、<strong>文脈自由文法（Context-Free Grammar: CFG）</strong> <span class="arithmatex">\(G = (V, \Sigma, R, S)\)</span> によって定義される。ここで <span class="arithmatex">\(V\)</span> は非終端記号、<span class="arithmatex">\(\Sigma\)</span> は終端記号、<span class="arithmatex">\(R\)</span> は生成規則、<span class="arithmatex">\(S\)</span> は開始記号である。</p>
+</li>
+<li>
+<p><strong>プッシュダウン・オートマトン（PDA）とLRパーシング：</strong> 
+    CFGを解析するため、コンパイラはスタックを備えたオートマトンであるPDAを利用する。特に、初代PCCが採用した <strong>LALR(1)（Look-Ahead LR with 1 token lookahead）</strong> パーサは、LR(0)の持つ状態爆発の課題を抑えつつ、実用的なプログラミング言語の構文を効率よく（<span class="arithmatex">\(O(N)\)</span> の時間計算量で）決定性解析できる強力な数学的枠組みを提供した。</p>
+</li>
 </ul>
 <h3 id="23-semantic-analysis">2.3 意味解析（Semantic Analysis）、型チェック、およびシンボルテーブル</h3>
 <p>構文的に正しいプログラムに対し、その意味的妥当性（型の整合性、スコープの解決、宣言の有無）を検証するフェーズである。</p>
 <ul>
-<li><strong>属性文法（Attribute Grammars）の理論：</strong> 構文木の各ノードに「属性（型、サイズ、記憶クラスなど）」を付与し、木上の依存関係（構文木のボトムアップまたはトップダウンの走査）に基づいて制約を満たしているか評価する。</li>
-<li><strong>シンボルテーブル（Symbol Table）の管理：</strong> スコープの階層構造（ブロック構造）を数学的な木またはハッシュの連鎖構造として管理し、識別子の名前解決（Name Resolution）を高速に行う。</li>
+<li>
+<p><strong>属性文法（Attribute Grammars）の理論：</strong> 構文木の各ノードに「属性（型、サイズ、記憶クラスなど）」を付与し、木上の依存関係（構文木のボトムアップまたはトップダウンの走査）に基づいて制約を満たしているか評価する。</p>
+</li>
+<li>
+<p><strong>シンボルテーブル（Symbol Table）の管理：</strong> スコープの階層構造（ブロック構造）を数学的な木またはハッシュの連鎖構造として管理し、識別子の名前解決（Name Resolution）を高速に行う。</p>
+</li>
 </ul>
 <h3 id="24-astir">2.4 抽象構文木（AST）と中間表現（IR）の構築</h3>
 <p>フロントエンドの最終成果物として、言語固有の冗長な構文詳細（括弧の位置や構文糖など）を削ぎ落とした<strong>抽象構文木（AST）</strong>、あるいはPCCが採用した<strong>式ツリー（Expression Trees）</strong>、さらには現代コンパイラにおけるフラットな3アドレスコード（Three-Address Code）等の中間表現へと変換される。これにより、マシン非依存の純粋なデータ構造が確立される。</p>
@@ -908,21 +920,27 @@
 <h3 id="41-ssastatic-single-assignment">4.1 SSA（Static Single Assignment）形式とデータフロー解析の数理</h3>
 <p>現代のコンパイラのほとんど（LLVM IRなど）は、SSA形式を採用している。</p>
 <ul>
-<li><strong>定義：</strong> プログラム中のすべての変数への代入文が、静的に<strong>「ちょうど1回」</strong>だけ行われるように変数をリネームした中間表現。</li>
+<li>
+<p><strong>定義：</strong> プログラム中のすべての変数への代入文が、静的に<strong>「ちょうど1回」</strong>だけ行われるように変数をリネームした中間表現。</p>
+</li>
 <li>
 <p><strong>支配木（Dominator Tree）の数理：</strong>
     コントロールフローグラフ（CFG） <span class="arithmatex">\(G = (V, E, entry)\)</span> において、ノード <span class="arithmatex">\(d\)</span> がノード <span class="arithmatex">\(n\)</span> を<strong>支配（Dominate）</strong>するとは、開始ノード <span class="arithmatex">\(entry\)</span> から <span class="arithmatex">\(n\)</span> に至るすべての有向パスが必ず <span class="arithmatex">\(d\)</span> を経由することを指す。</p>
 <div class="arithmatex">\[\text{Dom}(n) = \{d \in V \mid \text{every path from } entry \text{ to } n \text{ passes through } d\}\]</div>
-<p>この支配関係は半順序（Partial Order）をなし、<strong>支配木（Dominator Tree）</strong>という階層構造に一意にモデリングできる。
-* <strong><span class="arithmatex">\(\phi\)</span>（Phi）関数の配置と反復支配境界（IDF）：</strong>
-分岐によって複数の異なる定義が合流するブロックの先頭に、どの変数を採用すべきかを選択する抽象的な関数 <span class="arithmatex">\(\phi\)</span>（Phi Node）を挿入する必要がある（Cytron et al., 1991）。この挿入位置を効率的かつ最小限に決定するため、グラフ理論における<strong>支配境界（Dominance Frontier）</strong>および<strong>反復支配境界（Iterated Dominance Frontier: IDF）</strong>の計算アルゴリズムが用いられる（Cytron et al., 1991）。</p>
+<p>この支配関係は半順序（Partial Order）をなし、<strong>支配木（Dominator Tree）</strong>という階層構造に一意にモデリングできる。</p>
+</li>
+<li>
+<p><strong><span class="arithmatex">\(\phi\)</span>（Phi）関数の配置と反復支配境界（IDF）：</strong>
+    分岐によって複数の異なる定義が合流するブロックの先頭に、どの変数を採用すべきかを選択する抽象的な関数 <span class="arithmatex">\(\phi\)</span>（Phi Node）を挿入する必要がある（Cytron et al., 1991）。この挿入位置を効率的かつ最小限に決定するため、グラフ理論における<strong>支配境界（Dominance Frontier）</strong>および<strong>反復支配境界（Iterated Dominance Frontier: IDF）</strong>の計算アルゴリズムが用いられる（Cytron et al., 1991）。</p>
 </li>
 </ul>
 <h3 id="42-graph-coloring">4.2 レジスタ割当てにおけるグラフ彩色問題（Graph Coloring）の数理</h3>
 <p>無限にある仮想レジスタを、有限の物理レジスタ（<span class="arithmatex">\(k\)</span> 個）に割り当てる問題は、グラフ理論における<strong>グラフ彩色問題（Graph Coloring Problem）</strong>に完全に帰着される（Chaitin, 1982）。</p>
 <ul>
-<li><strong>干渉グラフ（Interference Graph）の構築：</strong>
-    プログラム中の各変数の生存期間（Live Range）が重なり合う（同時に有効である）変数間に無向辺を結んだグラフ <span class="arithmatex">\(G = (V, E)\)</span> を作成する（Chaitin, 1982）。</li>
+<li>
+<p><strong>干渉グラフ（Interference Graph）の構築：</strong>
+    プログラム中の各変数の生存期間（Live Range）が重なり合う（同時に有効である）変数間に無向辺を結んだグラフ <span class="arithmatex">\(G = (V, E)\)</span> を作成する（Chaitin, 1982）。</p>
+</li>
 <li>
 <p><strong>NP完全性と近似アルゴリズム（Chaitin-Briggs アルゴリズム）：</strong>
     一般のグラフの <span class="arithmatex">\(k\)</span>-彩色問題（頂点を高々 <span class="arithmatex">\(k\)</span> 色で隣接する色同士が重複しないように塗り分ける問題）は <strong>NP完全</strong> である。そのため、コンパイラでは以下のヒューリスティックな近似手法を用いる（Chaitin, 1982）。</p>
